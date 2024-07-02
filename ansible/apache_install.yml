@@ -1,0 +1,35 @@
+- name: Playbook para instalar Apache y configurar el firewall en Red Hat 8
+  hosts: localhost
+  become: yes
+  collections:
+    - ansible.posix
+  tasks:
+    - name: Instalar Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: Iniciar y habilitar Apache
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Instalar firewalld
+      yum:
+        name: firewalld
+        state: present
+
+    - name: Iniciar y habilitar firewalld
+      systemd:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Permitir tráfico HTTP en el firewall
+      ansible.posix.firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+        immediate: yes
+
