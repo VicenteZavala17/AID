@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Producto 2 AID</title>
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body class="card">
+  <div class="card-header text-center">
+    <h5>Bienvenido al portal AID</h5>
+    <p><small>
+        Producto 2 - IRC 10.1
+      </small></p>
+  </div>
+  <div class="row justify-content-center align-items-center">
+    <div class="col-md-6">
+      <img src="/static/imgs/UT-alta.png" class="img-fluid" style="width: auto; height: 500px;" />
+    </div>
+    <div class="card col-md-5">
+      <div class="card-body d-flex flex-column">
+        <form id="playbookForm">
+          <p>Ansible + Playbook</p>
+          <select id="opcion" class="form-select">
+            <option selected>Seleccione una opción</option>
+            <option value="1">Correr Playbook con Ansible</option>
+            <option value="2">CPLPNLPLVAH</option>
+            <option value="3">Descargar Playbook</option>
+          </select>
+          <div class="text-end mt-3">
+            <input id="enviarBtn" class="btn btn-success" type="submit" value="Enviar">
+          </div>
+        </form>
+      </div>
+      <div class="card-body" id="respuestaDiv">
+      </div>
+
+    </div>
+  </div>
+  <script>
+    var respuestaExitosa = false;
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('playbookForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var opcionSeleccionada = document.getElementById('opcion').value;
+        console.log(typeof (opcionSeleccionada))
+        console.log(opcionSeleccionada);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/ejecutar-playbook', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+          console.log('ReadyState:', xhr.readyState); // Verifica el estado de la solicitud
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            console.log('Status:', xhr.status); // Verifica el estado HTTP devuelto
+            if (xhr.status === 200) {
+              var response = JSON.parse(xhr.responseText);
+              console.log('Respuesta:', response);
+              if (opcionSeleccionada === '2') {
+                var youtube_link = response.youtube_link;
+                window.open(youtube_link, '_blank');
+              } else if (opcionSeleccionada === '3') {
+                var link = document.createElement('a');
+                link.href = '/static/playbook.yml';
+                link.setAttribute('download', 'playbook.yml');
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.getElementById('respuestaDiv').innerHTML = 'Descarga iniciada.';
+                document.body.removeChild(link);
+              }
+              var respuestaDiv = document.getElementById('respuestaDiv');
+              respuestaDiv.innerHTML = 'Respuesta recibida: ' + response.message;
+              respuestaExitosa = true;
+            } else {
+              respuestaExitosa = false;
+              console.error('Error en la solicitud AJAX:', xhr.statusText); // Mensaje de error HTTP
+            }
+          }
+        };
+
+        var data = JSON.stringify({ opcion: opcionSeleccionada });
+        xhr.send(data);
+      });
+    });
+  </script>
+  <script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+@import "./node_modules/@fontsource/great-vibes/index.css";
+
+.nav-link {
+    color: antiquewhite;
+    font-size: x-large;
+    cursor: pointer;
+    font-family: 'Great Vibes';
+}
+
+/* Ocultar la imagen de escritorio en dispositivos móviles */
+@media (max-width: 767px) {
+    .desktop-image {
+        display: none;
+    }
+}
+/* Ocultar la imagen de dispositivos móviles en escritorio */
+@media (min-width: 768px) {
+    .mobile-image {
+        display: none;
+    }
+}

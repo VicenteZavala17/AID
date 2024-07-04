@@ -1,0 +1,29 @@
+# Usa una imagen base de Python
+FROM python:3.8-slim
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Copia el archivo de requisitos y el archivo package.json
+COPY requirements.txt requirements.txt
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
+# Instala las dependencias de Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Instala Ansible
+RUN apt-get update && \
+    apt-get install -y \
+    ansible \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia el resto del código de la aplicación
+COPY . .
+
+# Expone el puerto en el que la aplicación se ejecutará
+EXPOSE 5000
+
+# Define el comando por defecto para ejecutar la aplicación
+CMD ["python", "app.py"]
+
